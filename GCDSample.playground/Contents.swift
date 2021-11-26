@@ -69,5 +69,35 @@ func useWorkItem() {
 }
 
 
+// MARK: - Important example
+let queueA = DispatchQueue(label: "queueA", qos: .background, attributes: .concurrent)
+let queueB = DispatchQueue(label: "queueB", attributes: .concurrent)
+queueA.async {
+    print("assign task")
+    queueB.async {
+        for i in 0...100 {
+            print("🎃🎃🎃🎃🎃 \(i)")
+        }
+    }
+//    queueB.sync {
+//        for i in 0...100 {
+//            print("🎃🎃🎃🎃🎃 \(i)")
+//        }
+//    }
+    queueA.async {
+        for i in 0...100 {
+            print("------- \(i)")
+        }
+    }
+    print("done")
+}
+for i in 100...200 {
+    print("♪♪♪♪♪ \(i)")
+}
+
+
+
+
+
 
 PlaygroundPage.current.finishExecution()
