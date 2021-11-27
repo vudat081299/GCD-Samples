@@ -106,7 +106,6 @@ queue.async(group: group) {
     Thread.sleep(until: Date().addingTimeInterval(10))
     print("End job 1")
 }
-//////////
 queue.async(group: group) {
     print("Start job 2")
     Thread.sleep(until: Date().addingTimeInterval(2))
@@ -119,11 +118,13 @@ if group.wait(timeout: .now() + 5) == .timedOut {
     print("All the jobs have completed")
 }
 
+print("Passing group wait")
 /*
  Start job 1
  Start job 2
  End job 2
  I got tired of waiting
+ Passing group wait
  End job 1
  */
 
