@@ -70,6 +70,7 @@ func useWorkItem() {
 
 
 // MARK: - Important example
+/// 1
 let queueA = DispatchQueue(label: "queueA", qos: .background, attributes: .concurrent)
 let queueB = DispatchQueue(label: "queueB", attributes: .concurrent)
 queueA.async {
@@ -96,7 +97,7 @@ for i in 100...200 {
 }
 
 
-
+/// 2
 let group = DispatchGroup()
 let queue = DispatchQueue.global(qos: .userInitiated)
 
@@ -105,7 +106,7 @@ queue.async(group: group) {
     Thread.sleep(until: Date().addingTimeInterval(10))
     print("End job 1")
 }
-
+//////////
 queue.async(group: group) {
     print("Start job 2")
     Thread.sleep(until: Date().addingTimeInterval(2))
