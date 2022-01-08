@@ -133,6 +133,7 @@ print("Passing group wait")
 // MARK: - Group, Semaphores
 PlaygroundPage.current.needsIndefiniteExecution = true
 
+
 let gsGroup = DispatchGroup()
 let gsQueue = DispatchQueue.global(qos: .userInteractive)
 let semaphore = DispatchSemaphore(value: 2)
@@ -142,6 +143,7 @@ let ids = [466881, 466910, 466925, 466931, 466978, 467028, 467032, 467042, 46705
 
 var images: [UIImage] = []
 
+// Example 1
 for id in ids {
     guard let url = URL(string: "\(base)\(id)-jpeg.jpg") else { continue }
     
@@ -171,7 +173,22 @@ gsGroup.notify(queue: gsQueue) {
     PlaygroundPage.current.finishExecution()
 }
 
-
+// Example 2
+for i in 1...100 {
+    semaphore.wait()
+    gsGroup.enter()
+    
+    gsQueue.async(group: gsGroup) {
+        defer {
+            gsGroup.leave()
+            semaphore.signal()
+        }
+        
+        print("Downloading image \(i)")
+        Thread.sleep(forTimeInterval: 3)
+        print("Downloaded image \(i)")
+    }
+}
 
 // MARK: - Priority inversion
 // Appear when use semaphore
