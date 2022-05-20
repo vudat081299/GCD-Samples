@@ -254,6 +254,100 @@ low.async {
 
 
 
+// Mark: - Incorrect semephore samples
+let group = DispatchGroup()
+let queue = DispatchQueue.global(qos: .userInteractive)
+let semaphore = DispatchSemaphore(value: 5)
+for i in 1...10 {
+    queue.async(group: group) {
+        semaphore.wait()
+//        defer { semaphore.signal() }
+        print("start task \(i)")
+        Thread.sleep(forTimeInterval: 0.1)
+        print("end task \(i)")
+    }
+}
+/* Result - using semaphore without .signal()
+ start task 1
+ start task 2
+ start task 3
+ start task 4
+ start task 5
+ end task 3
+ end task 1
+ end task 4
+ end task 2
+ end task 5
+ */
 
+let group2 = DispatchGroup()
+let queue2 = DispatchQueue.global(qos: .userInteractive)
+let semaphore2 = DispatchSemaphore(value: 5)
+for i in 1...10 {
+    queue2.async(group: group2) {
+//        semaphore2.wait()
+        defer { semaphore2.signal() }
+        print("start task \(i)")
+        Thread.sleep(forTimeInterval: 0.1)
+        print("end task \(i)")
+    }
+}
+/* Result - using semaphore without .wait()
+ start task 1
+ start task 2
+ start task 3
+ start task 4
+ start task 5
+ start task 6
+ start task 7
+ start task 8
+ start task 9
+ start task 10
+ end task 4
+ end task 3
+ end task 8
+ end task 9
+ end task 2
+ end task 1
+ end task 6
+ end task 5
+ end task 7
+ end task 10
+ */
+
+let group3 = DispatchGroup()
+let queue3 = DispatchQueue.global(qos: .userInteractive)
+let semaphore3 = DispatchSemaphore(value: 5)
+for i in 1...10 {
+    queue3.async(group: group3) {
+        semaphore3.wait()
+        defer { semaphore3.signal() }
+        print("start task \(i)")
+        Thread.sleep(forTimeInterval: 0.1)
+        print("end task \(i)")
+    }
+}
+/* Result - correct method
+ start task 1
+ start task 2
+ start task 3
+ start task 4
+ start task 5
+ end task 2
+ end task 3
+ end task 1
+ end task 5
+ end task 4
+ start task 6
+ start task 8
+ start task 7
+ start task 9
+ start task 10
+ end task 8
+ end task 6
+ end task 10
+ end task 7
+ end task 9
+ */
 
 PlaygroundPage.current.finishExecution()
